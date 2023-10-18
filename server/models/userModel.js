@@ -5,10 +5,10 @@ const validator = require("validator");
 
 function is_Valid_Mobile_Number(mobile_number) {
     let regex = new RegExp(/(0|91)?[6-9][0-9]{9}/);
-    if(mobile_number == null) {
+    if (mobile_number == null) {
         return false;
     }
-    else if(regex.test(mobile_number) == true) {
+    else if (regex.test(mobile_number) == true) {
         return true;
     }
     return false;
@@ -33,11 +33,62 @@ const userSchema = new mongoose.Schema({
     },
     purpose: {
         type: String
+    },
+    storage: {
+        storageType: {
+            type: String,
+        },
+        pickUpLocation: {
+            type: String
+        },
+        dropLocation: {
+            type: String
+        },
+        floorNo: {
+            type: Number
+        },
+        hasServiceLiftPickUpLocation: {
+            type: String
+        },
+        hasServiceLiftDropLocation: {
+            type: String
+        },
+        movingOn: {
+            type: Date
+        },
+        items: [{
+            itemName: {
+                type: String
+            },
+            itemDescription: {
+                type: String
+            },
+            quantity: {
+                type: Number
+            }
+        }],
+        vehicles: [{
+            vehicleName: {
+                type: String
+            },
+            vehicleDescription: {
+                type: String
+            },
+            quantity: {
+                type: Number
+            }
+        }],
+        totalCost: {
+            type: Number
+        },
+        shiftingDate: {
+            type: Date
+        }
     }
 });
 
 userSchema.methods.getJWTToken = function () {
-    return jwt.sign({ id: this._id}, process.env.JWT_SECRET, {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 };
