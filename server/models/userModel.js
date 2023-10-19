@@ -3,21 +3,9 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const validator = require("validator");
 
-function is_Valid_Mobile_Number(mobile_number) {
-    let regex = new RegExp(/(0|91)?[6-9][0-9]{9}/);
-    if (mobile_number == null) {
-        return false;
-    }
-    else if (regex.test(mobile_number) == true) {
-        return true;
-    }
-    return false;
-}
-
 const userSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
-        // validate: [is_Valid_Mobile_Number, "Enter valid phone number!"],
         validate: [validator.isMobilePhone, "Enter valid phone number!"],
         required: true
     },
@@ -34,7 +22,10 @@ const userSchema = new mongoose.Schema({
     purpose: {
         type: String
     },
-    storage: {
+    storage: [{
+        tracking_id: {
+            type: Number
+        },
         storageType: {
             type: String,
         },
@@ -84,7 +75,95 @@ const userSchema = new mongoose.Schema({
         shiftingDate: {
             type: Date
         }
-    }
+    }],
+    packersAndMovers: [{
+        tracking_id: {
+            type: Number
+        },
+        pickUpLocation: {
+            type: String
+        },
+        dropLocation: {
+            type: String
+        },
+        floorNo: {
+            type: Number
+        },
+        hasServiceLiftPickUpLocation: {
+            type: String
+        },
+        hasServiceLiftDropLocation: {
+            type: String
+        },
+        movingOn: {
+            type: Date
+        },
+        items: [{
+            itemName: {
+                type: String
+            },
+            itemDescription: {
+                type: String
+            },
+            quantity: {
+                type: Number
+            }
+        }],
+        vehicles: [{
+            vehicleName: {
+                type: String
+            },
+            vehicleDescription: {
+                type: String
+            },
+            quantity: {
+                type: Number
+            }
+        }],
+        totalCost: {
+            type: Number
+        },
+        shiftingDate: {
+            type: Date
+        }
+    }],
+    tracking: [{
+        storageOrPackers: {
+            type: String
+        },
+        id: {
+            type: Number
+        },
+        details: [
+            { type: String }
+        ],
+        driver: {
+            name: {
+                type: String
+            },
+            phoneNumber: {
+                type: String,
+                validate: [validator.isMobilePhone, "Enter valid phone number!"],
+            }
+        },
+        vehicle: {
+            name: {
+                type: String
+            },
+            description: {
+                type: String
+            }
+        },
+        carpenter: {
+            name: {
+                type: String
+            },
+            phoneNumber: {
+                type: String,
+                validate: [validator.isMobilePhone, "Enter valid phone number!"],
+            }
+        },
+    }]
 });
 
 userSchema.methods.getJWTToken = function () {

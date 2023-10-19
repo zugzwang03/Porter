@@ -5,7 +5,6 @@ const isAuthenticated = require("../middlewares/auth.js");
 router.route('/login/user').post(userController.login);
 router.route('/accountDetails/user').post(isAuthenticated, userController.accountDetails);
 router.route('/storage/user').post(isAuthenticated, userController.storage);
-console.log(Date.now());
-
+router.route('/packersAndMovers/user').post(isAuthenticated, userController.packersAndMovers);
 
 module.exports = router;

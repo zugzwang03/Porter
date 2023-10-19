@@ -29,17 +29,23 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
 
 const storage = catchAsyncErrors(async (req, res, next) => {
     // phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost
-    var { phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles } = req.body;
+    var { phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (!user) {
         return next(new ErrorHandler("User not logged in yet", "401"));
     }
-    user = await User.findByIdAndUpdate(user._id, { storage: { storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, totalCost, shiftingDate } }, { new: true });
-    for (const item of collectionOfItems) {
-        user = await User.findByIdAndUpdate(user._id, { $push: { "storage.items": { itemName: item.itemName, itemDescription: item.itemDescription, quantity: item.quantity } } }, { new: true });
+    var track_id = user.tracking.length;
+    user = await User.findByIdAndUpdate(user._id, { $push: { storage: { tracking_id: track_id, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, totalCost, shiftingDate } } }, { new: true });
+    user = await User.findByIdAndUpdate(user._id, { $push: { tracking: { id: track_id } } }, { new: true });
+    if (collectionOfItems) {
+        for (const item of collectionOfItems) {
+            user = await User.findByIdAndUpdate(user._id, { $push: { "storage.items": { itemName: item.itemName, itemDescription: item.itemDescription, quantity: item.quantity } } }, { new: true });
+        }
     }
-    for (const vehicle of collectionOfVehicles) {
-        user = await User.findByIdAndUpdate(user._id, { $push: { "storage.vehicles": { vehicleName: vehicle.vehicleName, vehicleDescription: vehicle.vehicleDescription, quantity: vehicle.quantity } } }, { new: true });
+    if (collectionOfVehicles) {
+        for (const vehicle of collectionOfVehicles) {
+            user = await User.findByIdAndUpdate(user._id, { $push: { "storage.vehicles": { vehicleName: vehicle.vehicleName, vehicleDescription: vehicle.vehicleDescription, quantity: vehicle.quantity } } }, { new: true });
+        }
     }
     res.status(200).json({
         success: true,
@@ -47,4 +53,30 @@ const storage = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-module.exports = { login, accountDetails, storage };
+const packersAndMovers = catchAsyncErrors(async (req, res, next) => {
+    // phoneNumber, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost
+    var { phoneNumber, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate } = req.body;
+    var user = await User.findOne({ phoneNumber });
+    if (!user) {
+        return next(new ErrorHandler("User not logged in yet", "401"));
+    }
+    var track_id = user.tracking.length;
+    user = await User.findByIdAndUpdate(user._id, { $push: { packersAndMovers: { tracking_id: track_id, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, totalCost, shiftingDate } } }, { new: true });
+    user = await User.findByIdAndUpdate(user._id, { $push: { tracking: { id: track_id } } }, { new: true });
+    if (collectionOfItems) {
+        for (const item of collectionOfItems) {
+            user = await User.findByIdAndUpdate(user._id, { $push: { "packersAndMovers.items": { itemName: item.itemName, itemDescription: item.itemDescription, quantity: item.quantity } } }, { new: true });
+        }
+    }
+    if (collectionOfVehicles) {
+        for (const vehicle of collectionOfVehicles) {
+            user = await User.findByIdAndUpdate(user._id, { $push: { "packersAndMovers.vehicles": { vehicleName: vehicle.vehicleName, vehicleDescription: vehicle.vehicleDescription, quantity: vehicle.quantity } } }, { new: true });
+        }
+    }
+    res.status(200).json({
+        success: true,
+        user
+    });
+})
+
+module.exports = { login, accountDetails, storage, packersAndMovers };

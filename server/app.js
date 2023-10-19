@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const app = express();
 const userRoute = require('./routes/userRoute.js');
+const trackingRoute = require('./routes/trackingRoute.js');
 
 app.use(cookieParser());
 app.use(express.json());
@@ -21,5 +22,6 @@ app.use(
 );
 
 app.use("/api/v1", userRoute);
+app.use("/api/v1", trackingRoute);
 
 module.exports = app;
