@@ -6,6 +6,9 @@ const fileUpload = require('express-fileupload');
 const app = express();
 const userRoute = require('./routes/userRoute.js');
 const trackingRoute = require('./routes/trackingRoute.js');
+const driverRoute = require('./routes/driverRoute.js');
+const pamRoute = require('./routes/pamRoute.js');
+const management = require('./routes/managementRoute.js');
 
 app.use(cookieParser());
 app.use(express.json());
@@ -23,5 +26,8 @@ app.use(
 
 app.use("/api/v1", userRoute);
 app.use("/api/v1", trackingRoute);
+app.use("/api/v1", driverRoute);
+app.use("/api/v1", pamRoute);
+app.use("/api/v1", management);
 
 module.exports = app;

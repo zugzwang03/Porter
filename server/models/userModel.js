@@ -163,6 +163,9 @@ const userSchema = new mongoose.Schema({
                 validate: [validator.isMobilePhone, "Enter valid phone number!"],
             }
         },
+        photo: [{
+            type: String
+        }]
     }]
 });
 

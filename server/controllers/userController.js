@@ -4,6 +4,7 @@ const sendCookie = require("../utils/sendCookie.js");
 const User = require("../models/userModel.js");
 
 const login = catchAsyncErrors(async (req, res, next) => {
+    // phoneNumber
     var { phoneNumber } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (user) {
