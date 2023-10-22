@@ -50,6 +50,19 @@ const driverSchema = new mongoose.Schema({
             }
         }
     ],
+    assignedOrders: [
+        {
+            tracking_id: {
+                type: String
+            },
+            paymentReceived: {
+                type: Number
+            },
+            volume: {
+                type: String
+            } 
+        }
+    ],
     vehicle: {
         type: {
             type: String

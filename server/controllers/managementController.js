@@ -3,6 +3,8 @@ const ErrorHandler = require("../utils/errorHandler.js");
 const sendCookie = require("../utils/sendCookie.js");
 const Management = require("../models/managementModel.js");
 const cloudinary = require('cloudinary');
+const User = require("../models/userModel.js");
+const Driver = require("../models/driverModel.js");
 
 const login = catchAsyncErrors(async (req, res, next) => {
     // phoneNumber
@@ -54,7 +56,7 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
 
 const verifyIdentity = catchAsyncErrors(async (req, res, next) => {
     // phoneNumber, adharCard, panCard
-    var { phoneNumber} = req.body;
+    var { phoneNumber } = req.body;
     var management = await Management.findOne({ phoneNumber });
     if (!management) {
         return next(new ErrorHandler("Another account with same phone number already exists", '401'));
@@ -65,7 +67,7 @@ const verifyIdentity = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler('Issue in uploading', '500'));
         }
         else {
-            management = await Management.findByIdAndUpdate(management._id, {adharCard: result.secure_url}, {new: true});
+            management = await Management.findByIdAndUpdate(management._id, { adharCard: result.secure_url }, { new: true });
         }
     }).end(req.files.adharCard.data);
     cloudinary.v2.uploader.upload_stream({ resource_type: "auto", folder: "Porter" }, async (error, result) => {
@@ -74,13 +76,24 @@ const verifyIdentity = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler('Issue in uploading', '500'));
         }
         else {
-            management = await Management.findByIdAndUpdate(management._id, {panCard: result.secure_url}, {new: true});
+            management = await Management.findByIdAndUpdate(management._id, { panCard: result.secure_url }, { new: true });
         }
     }).end(req.files.panCard.data);
     res.status(200).json({
         management,
         success: true
     });
-})
+});
 
-module.exports = { login, addEmail, accountDetails, verifyIdentity };
+const assignDriver = catchAsyncErrors(async (req, res, next) => {
+    // phoneNumber, driver_id, tracking_id, paymentReceived, volume
+    var { driver_id, tracking_id, paymentReceived, volume } = req.body;
+    var driver = await Driver.findOne({ _id: driver_id });
+    driver = await Driver.findByIdAndUpdate(driver._id, { $push: { assignedOrders: { tracking_id, paymentReceived, volume } } }, { new: true });
+    res.status(200).json({
+        success: true,
+        driver
+    });
+});
+
+module.exports = { login, addEmail, accountDetails, verifyIdentity, assignDriver };
