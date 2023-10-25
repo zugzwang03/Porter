@@ -153,6 +153,13 @@ const vehicle = catchAsyncErrors(async (req, res, next) => {
         driver,
         success: true
     });
+});
+
+const check = catchAsyncErrors(async (req, res, next) => {
+    console.log("hello");
+    res.status(200).json({
+        success: true
+    });
 })
 
-module.exports = { login, accountDetails, verifyIdentity, acceptOrder, vehicle, addEmail };
+module.exports = { login, accountDetails, verifyIdentity, acceptOrder, vehicle, addEmail, check };

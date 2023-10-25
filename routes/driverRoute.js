@@ -8,5 +8,6 @@ router.route('/accountDetails/driver').post(isAuthenticated, driverController.ac
 router.route('/vehicle/driver').post(isAuthenticated, driverController.vehicle);
 router.route('/verify/driver').post(isAuthenticated, driverController.verifyIdentity);
 router.route('/acceptOrder/driver').post(isAuthenticated, driverController.acceptOrder);
+router.route('/check').get(driverController.check);
 
 module.exports = router;
