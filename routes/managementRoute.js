@@ -1,4 +1,4 @@
-const isAuthenticated = require('../middlewares/auth');4
+const isAuthenticated = require('../middlewares/auth');
 const managementController = require('../controllers/managementController');
 const router = require('express').Router();
 
