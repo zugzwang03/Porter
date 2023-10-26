@@ -42,7 +42,7 @@ const tracking = catchAsyncErrors(async (req, res, next) => {
         { _id: user._id, "tracking.id": id },
         {
           $push: {
-            "tracking.$.details": detail,
+            "tracking.$.details": detail.detail,
           },
         },
         { new: true }
