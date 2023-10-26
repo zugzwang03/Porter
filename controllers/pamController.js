@@ -104,7 +104,6 @@ const addSupervisor = catchAsyncErrors(async (req, res, next) => {
     if (!pam) {
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
-    console.log(supervisor, tracking_id);
     pam = await Pam.findOneAndUpdate(
         { _id: pam._id, "acceptedOrders.tracking_id": tracking_id },
         {
