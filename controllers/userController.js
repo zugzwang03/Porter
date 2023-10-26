@@ -29,7 +29,7 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
 });
 
 const storage = catchAsyncErrors(async (req, res, next) => {
-    // phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost
+    // phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate
     var { phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (!user) {
@@ -55,7 +55,7 @@ const storage = catchAsyncErrors(async (req, res, next) => {
 });
 
 const packersAndMovers = catchAsyncErrors(async (req, res, next) => {
-    // phoneNumber, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost
+    // phoneNumber, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate
     var { phoneNumber, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (!user) {
@@ -78,6 +78,6 @@ const packersAndMovers = catchAsyncErrors(async (req, res, next) => {
         success: true,
         user
     });
-})
+});
 
 module.exports = { login, accountDetails, storage, packersAndMovers };

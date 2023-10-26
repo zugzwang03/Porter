@@ -36,9 +36,8 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
     if (!driver) {
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
-    console.log(driver);
     driver = await Driver.findByIdAndUpdate(driver._id, { name, birthDate }, { new: true });
-    var photo = req.files.photo;
+    var photo = req.files.profilePhoto;
     cloudinary.v2.uploader.upload_stream({ folder: "Porter", resource_type: 'auto' }, async (error, result) => {
         if (error) {
             console.log(error);
