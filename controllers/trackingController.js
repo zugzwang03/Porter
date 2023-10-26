@@ -37,12 +37,12 @@ const tracking = catchAsyncErrors(async (req, res, next) => {
       .end(photo.data);
   }
   if (details) {
-    for (var i = 0; i < details.length; i++) {
+    for (var detail of details) {
       user = await User.findOneAndUpdate(
         { _id: user._id, "tracking.id": id },
         {
           $push: {
-            "tracking.$.details": details[i],
+            "tracking.$.details": detail,
           },
         },
         { new: true }
