@@ -89,6 +89,9 @@ const assignDriver = catchAsyncErrors(async (req, res, next) => {
     // phoneNumber, driver_id, tracking_id, paymentReceived, volume
     var { driver_id, tracking_id, paymentReceived, volume } = req.body;
     var driver = await Driver.findOne({ _id: driver_id });
+    if(!driver) {
+        return next(new ErrorHandler("driver account not created!", '401'));
+    }
     driver = await Driver.findByIdAndUpdate(driver._id, { $push: { assignedOrders: { tracking_id, paymentReceived, volume } } }, { new: true });
     res.status(200).json({
         success: true,
