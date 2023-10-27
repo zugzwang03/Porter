@@ -9,6 +9,9 @@ const login = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (pam) {
+        res.status(401).json({
+            success: true,
+            "error message": "Another account with same phone number already exists"});
         return next(new ErrorHandler("Another account with same phone number already exists", '401'));
     }
     pam = await Pam.create({ phoneNumber });
@@ -20,6 +23,9 @@ const addEmail = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, email } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (!pam) {
+        res.status(401).json({
+            success: true,
+            "error message": "Pam not logged in yet"});
         return next(new ErrorHandler("Pam not logged in yet", "401"));
     }
     pam = await Pam.findByIdAndUpdate(pam._id, { email }, { new: true });
@@ -34,6 +40,9 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, name, birthDate, jobType, preferredJobLocation } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (!pam) {
+         res.status(401).json({
+            success: true,
+            "error message": "Pam not logged in yet"});
         return next(new ErrorHandler("Pam not logged in yet", "401"));
     }
     pam = await Pam.findByIdAndUpdate(pam._id, { name, birthDate, jobType, preferredJobLocation }, { new: true });
@@ -57,6 +66,9 @@ const verifyIdentity = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (!pam) {
+         res.status(401).json({
+            success: true,
+            "error message": "Pam not logged in yet"});
         return next(new ErrorHandler("Pam not logged in yet", "401"));
     }
     cloudinary.v2.uploader.upload_stream({ folder: "Porter", resource_type: "auto" }, async (error, result) => {
@@ -88,6 +100,9 @@ const acceptOrder = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, tracking_id, amount } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (!pam) {
+         res.status(401).json({
+            success: true,
+            "error message": "Pam not logged in yet"});
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
     pam = await Pam.findByIdAndUpdate(pam._id, { $push: { acceptedOrders: { tracking_id, amount } } }, { new: true });
@@ -102,6 +117,9 @@ const addSupervisor = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, tracking_id, supervisor } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (!pam) {
+         res.status(401).json({
+            success: true,
+            "error message": "Pam not logged in yet"});
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
     pam = await Pam.findOneAndUpdate(
@@ -122,6 +140,9 @@ const editAccountDetails = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, name, legal_name, trade_name, availability } = req.body;
     var pam = await Pam.findOne({ phoneNumber });
     if (!pam) {
+         res.status(401).json({
+            success: true,
+            "error message": "Pam not logged in yet"});
         return next(new ErrorHandler("Pam not logged in yet", "401"));
     }
     pam = await Pam.findByIdAndUpdate(pam._id, { name, legal_name, trade_name, availability }, { new: true });
