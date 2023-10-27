@@ -11,6 +11,9 @@ const tracking = catchAsyncErrors(async (req, res, next) => {
   var driver = await Driver.findById(driver_id);
   var photo = req.files.photo;
   if (!user) {
+     res.status(401).json({
+            success: true,
+            "error message": "User not logged in yet"});
     return next(new ErrorHandler("User not logged in", "401"));
   }
   if (photo) {
