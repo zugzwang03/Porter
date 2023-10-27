@@ -9,6 +9,10 @@ const login = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var driver = await Driver.findOne({ phoneNumber });
     if (driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "Another account with same phone number already exists"
+        });
         return next(new ErrorHandler("Another account with same phone number already exists", '401'));
     }
     driver = await Driver.create({ phoneNumber });
@@ -20,6 +24,10 @@ const addEmail = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, email } = req.body;
     var driver = await Driver.findOne({ phoneNumber });
     if (!driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("Driver not logged in yet", '401'));
     }
     driver = await Driver.findByIdAndUpdate(driver._id, { email }, { new: true });
@@ -34,6 +42,10 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, name, birthDate } = req.body;
     var driver = await Driver.findOne({ phoneNumber });
     if (!driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
     driver = await Driver.findByIdAndUpdate(driver._id, { name, birthDate }, { new: true });
@@ -58,6 +70,10 @@ const verifyIdentity = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var driver = await Driver.findOne({ phoneNumber });
     if (!driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
     var files = req.files;
@@ -131,6 +147,10 @@ const acceptOrder = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, tracking_id, paymentReceived, volume } = req.body;
     var driver = await Driver.findOne({ phoneNumber });
     if (!driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
     driver = await Driver.findByIdAndUpdate(driver._id, { $push: { acceptedOrders: { tracking_id, paymentReceived, volume } } }, {new: true});
@@ -145,6 +165,10 @@ const vehicle = catchAsyncErrors(async (req, res, next) => {
     var {phoneNumber, type, No, storageCapacity} = req.body;
     var driver = await Driver.findOne({ phoneNumber });
     if (!driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("Driver not logged in yet", "401"));
     }
     driver = await Driver.findByIdAndUpdate(driver._id, {vehicle: {type, No, storageCapacity}}, {new: true});
