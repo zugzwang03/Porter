@@ -23,6 +23,10 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (!user) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("User not logged in yet", "401"));
     }
     user = await User.findByIdAndUpdate(user._id, req.body, { new: true });
@@ -37,6 +41,10 @@ const storage = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, storageType, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (!user) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("User not logged in yet", "401"));
     }
     var track_id = user.tracking.length;
@@ -63,6 +71,10 @@ const packersAndMovers = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, pickUpLocation, dropLocation, floorNo, hasServiceLiftPickUpLocation, hasServiceLiftDropLocation, movingOn, collectionOfItems, collectionOfVehicles, totalCost, shiftingDate } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (!user) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("User not logged in yet", "401"));
     }
     var track_id = user.tracking.length;
