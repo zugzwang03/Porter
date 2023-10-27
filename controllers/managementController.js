@@ -11,6 +11,10 @@ const login = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var management = await Management.findOne({ phoneNumber });
     if (management) {
+        res.status(401).json({
+            success: false,
+            "error message": "Another account with same phone number already exists"
+        });
         return next(new ErrorHandler("Another account with same phone number already exists", '401'));
     }
     management = await Management.create({ phoneNumber });
@@ -22,7 +26,11 @@ const addEmail = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, email } = req.body;
     var management = await Management.findOne({ phoneNumber });
     if (!management) {
-        return next(new ErrorHandler("Another account with same phone number already exists", '401'));
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
+        return next(new ErrorHandler("User not logged in yet", '401'));
     }
     management = await Management.findByIdAndUpdate(management._id, { email }, { new: true });
     res.status(200).json({
@@ -36,7 +44,11 @@ const accountDetails = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber, name, birthDate, location } = req.body;
     var management = await Management.findOne({ phoneNumber });
     if (!management) {
-        return next(new ErrorHandler("Another account with same phone number already exists", '401'));
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
+        return next(new ErrorHandler("User not logged in yet", '401'));
     }
     management = await Management.findByIdAndUpdate(management._id, { name, birthDate, location }, { new: true });
     cloudinary.v2.uploader.upload_stream({ resource_type: "auto", folder: "Porter" }, async (error, result) => {
@@ -59,7 +71,11 @@ const verifyIdentity = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var management = await Management.findOne({ phoneNumber });
     if (!management) {
-        return next(new ErrorHandler("Another account with same phone number already exists", '401'));
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
+        return next(new ErrorHandler("User not logged in yet", '401'));
     }
     cloudinary.v2.uploader.upload_stream({ resource_type: "auto", folder: "Porter" }, async (error, result) => {
         if (error) {
@@ -90,6 +106,10 @@ const assignDriver = catchAsyncErrors(async (req, res, next) => {
     var { driver_id, tracking_id, paymentReceived, volume } = req.body;
     var driver = await Driver.findOne({ _id: driver_id });
     if(!driver) {
+        res.status(401).json({
+            success: false,
+            "error message": "User not logged in yet"
+        });
         return next(new ErrorHandler("driver account not created!", '401'));
     }
     driver = await Driver.findByIdAndUpdate(driver._id, { $push: { assignedOrders: { tracking_id, paymentReceived, volume } } }, { new: true });
