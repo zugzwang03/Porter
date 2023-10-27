@@ -8,6 +8,10 @@ const login = catchAsyncErrors(async (req, res, next) => {
     var { phoneNumber } = req.body;
     var user = await User.findOne({ phoneNumber });
     if (user) {
+        res.status(401).json({
+            success: false,
+            "error message": "Another account with same phone number already exists"
+        });
         return next(new ErrorHandler("Another account with same phone number already exists", '401'));
     }
     user = await User.create({ phoneNumber });
